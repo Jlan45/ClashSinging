@@ -108,28 +108,23 @@ func (s Socks5Conn) Close() error {
 }
 
 func (s Socks5Conn) LocalAddr() net.Addr {
-	//TODO implement me
-	panic("implement me")
+	return s.RawConn.LocalAddr()
 }
 
 func (s Socks5Conn) RemoteAddr() net.Addr {
-	//TODO implement me
-	panic("implement me")
+	return s.RawConn.RemoteAddr()
 }
 
 func (s Socks5Conn) SetDeadline(t time.Time) error {
-	//TODO implement me
-	panic("implement me")
+	return s.RawConn.SetDeadline(t)
 }
 
 func (s Socks5Conn) SetReadDeadline(t time.Time) error {
-	//TODO implement me
-	panic("implement me")
+	return s.RawConn.SetReadDeadline(t)
 }
 
 func (s Socks5Conn) SetWriteDeadline(t time.Time) error {
-	//TODO implement me
-	panic("implement me")
+	return s.RawConn.SetWriteDeadline(t)
 }
 
 func (s Socks5) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
