@@ -1,4 +1,4 @@
-package ClashSinging
+package socks5
 
 import (
 	"bytes"
