@@ -15,3 +15,13 @@ func SHA224String(password string) string {
 	}
 	return str
 }
+func GenerateRandomString(length int) string {
+	// 定义字符集
+	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	// 生成随机字符串
+	randomString := make([]byte, length)
+	for i := range randomString {
+		randomString[i] = charset[i%len(charset)]
+	}
+	return string(randomString)
+}

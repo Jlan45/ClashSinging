@@ -4,18 +4,17 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"github.com/Jlan45/ClashSinging/protocol/tlsbase"
 	"github.com/Jlan45/ClashSinging/tools"
 	"net"
 	"strconv"
-	"time"
 )
 
 type Trojan struct {
-	Host     string
-	Port     int
-	Password string
-	SNI      string
-	Insecure bool
+	Host      string
+	Port      int
+	Password  string
+	TLSConfig tlsbase.TLS
 }
 
 func (t Trojan) Dial(network, addr string) (c net.Conn, err error) {
@@ -25,10 +24,10 @@ func (t Trojan) Dial(network, addr string) (c net.Conn, err error) {
 
 func (t Trojan) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
 	config := &tls.Config{
-		InsecureSkipVerify: t.Insecure,
-		ServerName:         t.SNI,
+		InsecureSkipVerify: t.TLSConfig.Insecure,
+		ServerName:         t.TLSConfig.SNI,
 	}
-	if t.SNI == "" {
+	if t.TLSConfig.SNI == "" {
 		config.ServerName = t.Host
 	}
 	rawConn, err := net.Dial("tcp", net.JoinHostPort(t.Host, strconv.Itoa(t.Port)))
@@ -93,52 +92,4 @@ func (t Trojan) DialContext(ctx context.Context, network, address string) (net.C
 	}
 	// 发送trojan握手，Trojan没有握手
 	return sc, nil
-}
-
-type TrojanConn struct {
-	RawConn net.Conn // 原始连接
-	TlsConn net.Conn // tls连接
-	Info    Trojan   // 代理信息
-}
-
-func (t TrojanConn) Read(b []byte) (n int, err error) {
-	n, err = t.TlsConn.Read(b)
-	if err != nil {
-		return 0, err
-	}
-	return n, nil
-}
-
-func (t TrojanConn) Write(b []byte) (n int, err error) {
-
-	n, err = t.TlsConn.Write(b)
-	if err != nil {
-		return 0, err
-	}
-	return n, nil
-}
-
-func (t TrojanConn) Close() error {
-	return t.TlsConn.Close()
-}
-
-func (t TrojanConn) LocalAddr() net.Addr {
-	return t.RawConn.LocalAddr()
-}
-
-func (t TrojanConn) RemoteAddr() net.Addr {
-	return t.RawConn.RemoteAddr()
-}
-
-func (tc TrojanConn) SetDeadline(t time.Time) error {
-	return tc.TlsConn.SetDeadline(t)
-}
-
-func (tc TrojanConn) SetReadDeadline(t time.Time) error {
-	return tc.TlsConn.SetReadDeadline(t)
-}
-
-func (tc TrojanConn) SetWriteDeadline(t time.Time) error {
-
-	return tc.TlsConn.SetWriteDeadline(t)
 }

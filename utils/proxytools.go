@@ -36,13 +36,5 @@ func ParseTrojan(URLObj *url.URL) proxy.Proxy {
 		Host:     host,
 		Port:     portInt,
 		Password: pass,
-		SNI:      URLObj.Query().Get("sni"),
-		Insecure: func() bool {
-			if URLObj.Query().Get("skip-cert-verify") == "true" || URLObj.Query().Get("skip-cert-verify") == "1" {
-				return true
-			} else {
-				return false
-			}
-		}(),
 	}
 }
