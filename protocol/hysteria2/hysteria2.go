@@ -29,9 +29,6 @@ func (h Hysteria2) Init() error {
 			},
 		},
 	}
-	//if h3Transport, ok := httpClient.Transport.(*http3.Transport); ok {
-	//	sess, err := h3Transport.GetSession(req.URL)
-	//}
 	// 发起 HTTP/3 请求
 	req, err := http.NewRequest("POST", "https://138.2.31.176:32467/auth", nil)
 	req.Proto = "HTTP/3"
@@ -55,5 +52,5 @@ func (h Hysteria2) Dial(network, addr string) (net.Conn, error) {
 }
 
 func (h Hysteria2) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
-
+	return nil, nil
 }
