@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"github.com/Jlan45/ClashSinging/protocol/socks5"
+	"github.com/Jlan45/ClashSinging/protocol/tlsbase"
 	"github.com/Jlan45/ClashSinging/protocol/trojan"
 	"github.com/Jlan45/ClashSinging/proxy"
 	"net"
@@ -13,14 +15,22 @@ func ParseProxyUrl(proxyUrl string) proxy.Proxy {
 	if err != nil {
 		return nil
 	}
+	portInt, err := strconv.Atoi(parsedURL.Port())
+	pass, _ := parsedURL.User.Password()
 	switch parsedURL.Scheme {
 	case "socks5":
-		return nil
+		return socks5.Socks5{
+			Host:     parsedURL.Host,
+			Port:     portInt,
+			Username: parsedURL.User.Username(),
+			Password: pass,
+		}
 	case "trojan":
 		return ParseTrojan(parsedURL)
 	}
 	return nil
 }
+
 func ParseTrojan(URLObj *url.URL) proxy.Proxy {
 	host, port, err := net.SplitHostPort(URLObj.Host)
 	if err != nil {
@@ -36,5 +46,14 @@ func ParseTrojan(URLObj *url.URL) proxy.Proxy {
 		Host:     host,
 		Port:     portInt,
 		Password: pass,
+		TLSConfig: tlsbase.TLS{
+			Insecure: func() bool {
+				if URLObj.Query().Get("allowInsecure") == "true" || URLObj.Query().Get("allowInsecure") == "1" {
+					return true
+				}
+				return false
+			}(),
+			SNI: URLObj.Query().Get("sni"),
+		},
 	}
 }

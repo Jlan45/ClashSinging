@@ -17,6 +17,10 @@ type Trojan struct {
 	TLSConfig tlsbase.TLS
 }
 
+func (t Trojan) Init() error {
+	return nil
+}
+
 func (t Trojan) Dial(network, addr string) (c net.Conn, err error) {
 	ctx := context.Background()
 	return t.DialContext(ctx, network, addr)

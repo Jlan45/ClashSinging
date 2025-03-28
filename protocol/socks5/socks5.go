@@ -16,6 +16,11 @@ type Socks5 struct {
 	Username string
 	Password string
 }
+
+func (s Socks5) Init() error {
+	return nil
+}
+
 type Socks5Conn struct {
 	RawConn net.Conn // 原始连接
 	Info    Socks5   // 代理信息
