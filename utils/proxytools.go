@@ -48,7 +48,7 @@ func ParseTrojan(URLObj *url.URL) proxy.Proxy {
 		Password: pass,
 		TLSConfig: tlsbase.TLS{
 			Insecure: func() bool {
-				if URLObj.Query().Get("allowInsecure") == "true" || URLObj.Query().Get("allowInsecure") == "1" {
+				if URLObj.Query().Get("skip-cert-verify") == "true" || URLObj.Query().Get("skip-cert-verify") == "1" {
 					return true
 				}
 				return false
